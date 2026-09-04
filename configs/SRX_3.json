@@ -1,0 +1,45 @@
+{
+  "version": "12.1X47-D15.4",
+  "system": {
+    "host-name": "SRX_3",
+    "root-authentication": {
+      "encrypted-password": "$1$4TkbZDtp$6E8C6Bg7K6gnHR31XnJjl0"
+    },
+    "services": ["ssh"]
+  },
+  "interfaces": {
+    "ge-0/0/1": {"unit": {"0": {"family": {"inet": {"address": "192.168.15.1/24"}}}}},
+    "ge-0/0/2": {"unit": {"0": {"family": {"inet": {"address": "10.10.10.2/24"}}}}},
+    "ge-0/0/3": {"unit": {"0": {"family": {"inet": {"address": "192.168.16.1/24"}}}}},
+    "ge-0/0/4": {"unit": {"0": {"family": {"inet": {"address": "10.10.12.8/24"}}}}}
+  },
+  "routing-options": {
+    "static": {
+      "routes": [
+        {"route": "192.168.11.0/24", "next-hop": "10.10.12.1"},
+        {"route": "192.168.12.0/24", "next-hop": "10.10.12.1"},
+        {"route": "192.168.13.0/24", "next-hop": "10.10.12.1"},
+        {"route": "192.168.14.0/24", "next-hop": "10.10.12.1"},
+        {"route": "192.168.17.0/24", "next-hop": "10.10.10.1"},
+        {"route": "192.168.18.0/24", "next-hop": "10.10.10.1"}
+      ]
+    }
+  },
+  "security": {
+    "policies": [{
+      "from-zone": "myTrust_3",
+      "to-zone": "myTrust_3",
+      "policy": "default-permit",
+      "match": {"source-address": "any", "destination-address": "any", "application": "any"},
+      "then": "permit"
+    }],
+    "zones": {
+      "security-zone": {
+        "myTrust_3": {
+          "interfaces": ["ge-0/0/1.0", "ge-0/0/2.0", "ge-0/0/3.0", "ge-0/0/4.0"],
+          "host-inbound-traffic": {"system-services": ["ping", "traceroute", "ssh"]}
+        }
+      }
+    }
+  }
+}
